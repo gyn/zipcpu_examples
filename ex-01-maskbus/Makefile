@@ -32,15 +32,19 @@
 .PHONY: all
 all: maskbus
 
+VERILATOR=verilator
+VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | sed -e "s/^.*=\s*//"')
+VINC := $(VERILATOR_ROOT)/include
+
 obj_dir/Vmaskbus.cpp: maskbus.v
-	verilator -Wall -cc maskbus.v
+	$(VERILATOR) -Wall -cc maskbus.v
 
 obj_dir/Vmaskbus__ALL.a: obj_dir/Vmaskbus.cpp
-	make -C obj_dir -f Vmaskbus.mk
+	${MAKE} -C obj_dir -f Vmaskbus.mk
 
 maskbus: maskbus.cpp obj_dir/Vmaskbus__ALL.a
-	g++ -I/usr/share/verilator/include -I obj_dir \
-		/usr/share/verilator/include/verilated.cpp \
+	g++ -I$(VINC) -I obj_dir \
+		$(VINC)/verilated.cpp \
 		maskbus.cpp obj_dir/Vmaskbus__ALL.a	\
 		-o maskbus
 

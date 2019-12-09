@@ -1,0 +1,56 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Fri Apr  5 12:12:50 2019
+[*]
+[dumpfile] "(null)"
+[savefile] "/home/dan/jericho/work/rnd/opencores/lessons/ex-10-fifo/sfifo.gtkw"
+[timestart] 0
+[size] 1651 600
+[pos] -1 -1
+*-3.862496 40 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 300
+[signals_width] 250
+[sst_expanded] 1
+[sst_vpaned_height] 143
+@29
+sfifo.f_past_valid
+@28
+sfifo.i_clk
+[color] 3
+sfifo.i_wr
+@22
+[color] 3
+sfifo.i_data[7:0]
+@28
+[color] 3
+sfifo.o_full
+@22
+[color] 3
+sfifo.o_fill[4:0]
+@200
+-
+@28
+[color] 2
+sfifo.i_rd
+@22
+[color] 2
+sfifo.o_data[7:0]
+@28
+[color] 2
+sfifo.o_empty
+@200
+-
+@22
+sfifo.f_fill[4:0]
+sfifo.mem<0>[7:0]
+sfifo.rd_addr[4:0]
+sfifo.wr_addr[4:0]
+@28
+sfifo.second_addr_in_fifo
+sfifo.first_addr_in_fifo
+@22
+sfifo.distance_to_first[4:0]
+sfifo.first_addr[4:0]
+sfifo.second_addr[4:0]
+[pattern_trace] 1
+[pattern_trace] 0

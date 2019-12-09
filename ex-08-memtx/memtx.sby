@@ -1,0 +1,20 @@
+[tasks]
+cvr
+prf
+
+[options]
+prf: mode prove
+prf: depth 5
+cvr: mode cover
+cvr: depth 150
+
+[engines]
+smtbmc yices
+
+[script]
+read -formal memtx.v
+prep -top memtx
+
+[files]
+memtx.v
+memfile.hex

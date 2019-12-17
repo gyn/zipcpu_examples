@@ -35,15 +35,18 @@ all: maskbus
 VERILATOR=verilator
 VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | sed -e "s/^.*=\s*//"')
 VINC := $(VERILATOR_ROOT)/include
+VOPT := OPT_FAST="-O3 -fno-stack-protector"
+
+COPT := -O3 -fno-stack-protector
 
 obj_dir/Vmaskbus.cpp: maskbus.v
 	$(VERILATOR) -Wall -cc maskbus.v
 
 obj_dir/Vmaskbus__ALL.a: obj_dir/Vmaskbus.cpp
-	${MAKE} -C obj_dir -f Vmaskbus.mk
+	${MAKE} $(VOPT) -C obj_dir -f Vmaskbus.mk
 
 maskbus: maskbus.cpp obj_dir/Vmaskbus__ALL.a
-	g++ -I$(VINC) -I obj_dir \
+	g++ $(COPT) -I$(VINC) -I obj_dir \
 		$(VINC)/verilated.cpp \
 		maskbus.cpp obj_dir/Vmaskbus__ALL.a	\
 		-o maskbus

@@ -27,18 +27,42 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
 //
+`default_nettype none
+//
 module	ledwalker(i_clk, o_led);
+`ifdef	VERILATOR
+	parameter CLOCK_RATE_HZ = 300_000;
+`else
+	parameter CLOCK_RATE_HZ = 50_000_000;
+`endif
+	localparam WIDTH = $clog2(CLOCK_RATE_HZ);
+
 	input	wire		i_clk;
 	output	reg	[7:0]	o_led;
+
+	reg 	[WIDTH-1:0]	counter;
+	wire				strobe;
+
+	initial	counter = 0;
+	always @(posedge i_clk)
+	if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+		counter <= 0;
+	else begin
+		counter <= counter + 1'b1;
+	end
+
+	assign strobe = (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1));
 
 	reg	[3:0]	led_index;
 	initial	led_index = 0;
 	always @(posedge i_clk)
-	if (led_index > 4'd13)
-		led_index <= 0;
-	else
-		led_index <= led_index + 1'b1;
+	if (strobe)
+		if (led_index == 4'hd)
+			led_index <= 0;
+		else
+			led_index <= led_index + 1'b1;
 
+	initial o_led = 8'h01;
 	always @(posedge i_clk)
 	case(led_index)
 	4'h0: o_led <= 8'h01;
@@ -58,7 +82,7 @@ module	ledwalker(i_clk, o_led);
 	//
 	4'hc: o_led <= 8'h04;
 	4'hd: o_led <= 8'h02;
-	default: o_leed <= 8'h01;
+	default: o_led <= 8'h01;
 	endcase
 
 // To keep our formal verification logic from being synthesized
@@ -66,7 +90,14 @@ module	ledwalker(i_clk, o_led);
 // block
 `ifdef	FORMAL
 	always @(*)
-		assert(led_state <= 4'd13);
+		assert(led_index <= 4'hd);
+
+	always @(*)
+		assert(counter < CLOCK_RATE_HZ);
+
+	always @(*)
+		if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+			assert(counter);
 
 	// I prefix all of the registers (or wires) I use in formal
 	// verification with f_, to distinguish them from the rest of the

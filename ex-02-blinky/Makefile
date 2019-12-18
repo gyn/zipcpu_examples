@@ -36,18 +36,21 @@ all: blinky
 VERILATOR=verilator
 VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | sed -e "s/^.*=\s*//"')
 VINC := $(VERILATOR_ROOT)/include
+VOPT := OPT_FAST="-O3 -fno-stack-protector"
+
+COPT := -O3 -fno-stack-protector
 
 # Ideally, we'd want -GWIDTH=12
 # This requires a newer version of Verilator than I have with my distro
 # Hence we have the `ifdef inside blinky.v
 obj_dir/Vblinky.cpp: blinky.v
-	$(VERILATOR) --trace -Wall -cc blinky.v
+	$(VERILATOR) --trace -Wall -GWIDTH=12 -cc blinky.v
 
 obj_dir/Vblinky__ALL.a: obj_dir/Vblinky.cpp
-	make --no-print-directory -C obj_dir -f Vblinky.mk
+	${MAKE} $(VOPT) --no-print-directory -C obj_dir -f Vblinky.mk
 
 blinky: blinky.cpp obj_dir/Vblinky__ALL.a
-	g++ -I$(VINC) -I obj_dir            \
+	g++ $(COPT) -I$(VINC) -I obj_dir            \
 		$(VINC)/verilated.cpp       \
 		$(VINC)/verilated_vcd_c.cpp \
 		blinky.cpp obj_dir/Vblinky__ALL.a                \

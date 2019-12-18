@@ -38,6 +38,9 @@ all: ppsi ppsii
 VERILATOR=verilator
 VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | sed -e "s/^.*=\s*//"')
 VINC := $(VERILATOR_ROOT)/include
+VOPT := OPT_FAST="-O3 -fno-stack-protector"
+
+COPT := -O3 -fno-stack-protector
 
 obj_dir/Vppsi.cpp: ppsi.v
 	$(VERILATOR) --trace -Wall -GCLOCK_RATE_HZ=3000 -cc ppsi.v
@@ -46,18 +49,18 @@ obj_dir/Vppsii.cpp: ppsii.v
 	$(VERILATOR) --trace -Wall -GCLOCK_RATE_HZ=3000 -cc ppsii.v
 
 obj_dir/Vppsi__ALL.a: obj_dir/Vppsi.cpp
-	${MAKE} --no-print-directory -C obj_dir -f Vppsi.mk
+	${MAKE} $(VOPT) --no-print-directory -C obj_dir -f Vppsi.mk
 
 obj_dir/Vppsii__ALL.a: obj_dir/Vppsii.cpp
-	${MAKE} --no-print-directory -C obj_dir -f Vppsii.mk
+	${MAKE} $(VOPT) --no-print-directory -C obj_dir -f Vppsii.mk
 
 ppsi: ppsi.cpp obj_dir/Vppsi__ALL.a
-	g++ -I$(VINC) -I obj_dir $(VINC)/verilated.cpp	\
+	g++ $(COPT) -I$(VINC) -I obj_dir $(VINC)/verilated.cpp	\
 		$(VINC)/verilated_vcd_c.cpp ppsi.cpp	\
 		obj_dir/Vppsi__ALL.a -o ppsi
 
 ppsii: ppsii.cpp obj_dir/Vppsii__ALL.a
-	g++ -I$(VINC) -I obj_dir $(VINC)/verilated.cpp	\
+	g++ $(COPT) -I$(VINC) -I obj_dir $(VINC)/verilated.cpp	\
 		$(VINC)/verilated_vcd_c.cpp ppsii.cpp	\
 		obj_dir/Vppsii__ALL.a -o ppsii
 

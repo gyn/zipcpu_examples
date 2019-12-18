@@ -40,16 +40,16 @@ VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | 
 VINC := $(VERILATOR_ROOT)/include
 
 obj_dir/Vppsi.cpp: ppsi.v
-	$(VERILATOR) --trace -Wall -cc ppsi.v
+	$(VERILATOR) --trace -Wall -GCLOCK_RATE_HZ=3000 -cc ppsi.v
 
 obj_dir/Vppsii.cpp: ppsii.v
-	$(VERILATOR) --trace -Wall -cc ppsii.v
+	$(VERILATOR) --trace -Wall -GCLOCK_RATE_HZ=3000 -cc ppsii.v
 
 obj_dir/Vppsi__ALL.a: obj_dir/Vppsi.cpp
-	make --no-print-directory -C obj_dir -f Vppsi.mk
+	${MAKE} --no-print-directory -C obj_dir -f Vppsi.mk
 
 obj_dir/Vppsii__ALL.a: obj_dir/Vppsii.cpp
-	make --no-print-directory -C obj_dir -f Vppsii.mk
+	${MAKE} --no-print-directory -C obj_dir -f Vppsii.mk
 
 ppsi: ppsi.cpp obj_dir/Vppsi__ALL.a
 	g++ -I$(VINC) -I obj_dir $(VINC)/verilated.cpp	\

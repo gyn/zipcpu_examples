@@ -27,6 +27,10 @@
 //
 `default_nettype none
 //
+//
+//
+`define	BLINK_SHORTER
+//
 module ppsi(i_clk, o_led);
 `ifdef	VERILATOR
 	parameter CLOCK_RATE_HZ = 300_000;
@@ -40,18 +44,25 @@ module ppsi(i_clk, o_led);
 
 	initial	counter = 0;
 	always @(posedge i_clk)
-	if (counter >= CLOCK_RATE_HZ/2-1)
+	if (counter == CLOCK_RATE_HZ-1)
 		counter <= 0;
 	else begin
 		counter <= counter + 1'b1;
 	end
 
+	initial	o_led = 0;
 	always @(posedge i_clk)
-	if (counter >= CLOCK_RATE_HZ/2-1)
-		o_led <= !o_led;
+	if (counter == CLOCK_RATE_HZ-1)
+		o_led <= 0;
+`ifdef BLINK_SHORTER
+	else if (counter == 3*CLOCK_RATE_HZ/4-1)
+`else
+	else if (counter == CLOCK_RATE_HZ/2-1)
+`endif
+		o_led <= 1;
 
 `ifdef	FORMAL
 	always @(*)
-		assert(counter < CLOCK_RATE_HZ/2);
+		assert(counter < CLOCK_RATE_HZ);
 `endif
 endmodule

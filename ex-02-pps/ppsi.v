@@ -31,7 +31,7 @@ module ppsi(i_clk, o_led);
 `ifdef	VERILATOR
 	parameter CLOCK_RATE_HZ = 300_000;
 `else
-	parameter CLOCK_RATE_HZ = 100_000_000;
+	parameter CLOCK_RATE_HZ = 50_000_000;
 `endif
 	input	wire	i_clk;
 	output	reg	o_led;
@@ -40,12 +40,15 @@ module ppsi(i_clk, o_led);
 
 	initial	counter = 0;
 	always @(posedge i_clk)
-	if (counter < CLOCK_RATE_HZ/2-1)
-		counter <= counter + 1'b1;
-	else begin
+	if (counter >= CLOCK_RATE_HZ/2-1)
 		counter <= 0;
-		o_led <= !o_led;
+	else begin
+		counter <= counter + 1'b1;
 	end
+
+	always @(posedge i_clk)
+	if (counter >= CLOCK_RATE_HZ/2-1)
+		o_led <= !o_led;
 
 `ifdef	FORMAL
 	always @(*)

@@ -36,7 +36,7 @@ module dimmer(i_clk, o_led);
 	reg	[27:0]	counter;
 
 	always @(posedge i_clk)
-		counter <= counter + 1;
+		counter <= counter + 1'b1;
 
 	assign	o_led = (counter[7:0]
 		         < counter[27:20]);

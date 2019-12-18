@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 	tfp->open("ledwalker.vcd");
 
 	last_led = tb->o_led;
-	for(int k=0; k<(1<<10); k++) {
+	for(int k=0; k<(1<<16); k++) {
 		tick(++tickcount, tb, tfp);
 
 		// Now let's print our results

@@ -37,15 +37,18 @@ all: ledwalker_tb
 VERILATOR=verilator
 VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | sed -e "s/^.*=\s*//"')
 VINC := $(VERILATOR_ROOT)/include
+VOPT := OPT_FAST="-O3 -fno-stack-protector"
+
+COPT := -O3 -fno-stack-protector
 
 obj_dir/Vledwalker.cpp: ledwalker.v
-	$(VERILATOR) --trace -Wall -cc ledwalker.v
+	$(VERILATOR) --trace -Wall -GCLOCK_RATE_HZ=3000 -cc ledwalker.v
 
 obj_dir/Vledwalker__ALL.a: obj_dir/Vledwalker.cpp
-	make --no-print-directory -C obj_dir -f Vledwalker.mk
+	${MAKE} $(VOPT) --no-print-directory -C obj_dir -f Vledwalker.mk
 
 ledwalker_tb: ledwalker.cpp obj_dir/Vledwalker__ALL.a
-	g++ -I$(VINC) -I obj_dir $(VINC)/verilated.cpp		\
+	g++ $(COPT) -I$(VINC) -I obj_dir $(VINC)/verilated.cpp		\
 		$(VINC)/verilated_vcd_c.cpp ledwalker.cpp	\
 		obj_dir/Vledwalker__ALL.a -o ledwalker_tb
 

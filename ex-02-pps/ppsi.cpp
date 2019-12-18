@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 	tfp->open("ppsi.vcd");
 
 	last_led = tb->o_led;
-	for(int k=0; k<(1<<20); k++) {
+	for(int k=0; k<(1<<13); k++) {
 		tick(++tickcount, tb, tfp);
 
 		// Now let's print our results

@@ -47,18 +47,23 @@ module	reqwalker(i_clk,
 
 	wire		busy;
 	reg	[3:0]	state;
+	reg	[3:0]	state_next;
 
 	initial	state = 0;
 	always @(posedge i_clk)
+		state <= state_next;
+
+	initial	state_next = 0;
+	always @(*)
 	if ((i_stb)&&(i_we)&&(!o_stall))
-		state <= 4'h1;
+		state_next = 4'h1;
 	else if (state >= 4'd11)
-		state <= 4'h0;
+		state_next = 4'h0;
 	else if (state != 0)
-		state <= state + 1'b1;
+		state_next = state + 1'b1;
 
 	always @(posedge i_clk)
-	case(state)
+	case(state_next)
 	4'h1: o_led <= 6'b00_0001;
 	4'h2: o_led <= 6'b00_0010;
 	4'h3: o_led <= 6'b00_0100;

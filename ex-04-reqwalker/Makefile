@@ -35,15 +35,18 @@ all: reqwalker_tb
 VERILATOR=verilator
 VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | sed -e "s/^.*=\s*//"')
 VINC := $(VERILATOR_ROOT)/include
+VOPT := OPT_FAST="-O3 -fno-stack-protector"
+
+COPT := -O3 -fno-stack-protector
 
 obj_dir/Vreqwalker.cpp: reqwalker.v
 	$(VERILATOR) --trace -Wall -cc reqwalker.v
 
 obj_dir/Vreqwalker__ALL.a: obj_dir/Vreqwalker.cpp
-	make --no-print-directory -C obj_dir -f Vreqwalker.mk
+	${MAKE} $(VOPT) --no-print-directory -C obj_dir -f Vreqwalker.mk
 
 reqwalker_tb: reqwalker.cpp obj_dir/Vreqwalker__ALL.a
-	g++ -I$(VINC) -I obj_dir $(VINC)/verilated.cpp	\
+	g++ $(COPT) -I$(VINC) -I obj_dir $(VINC)/verilated.cpp	\
 		$(VINC)/verilated_vcd_c.cpp reqwalker.cpp	\
 		obj_dir/Vreqwalker__ALL.a -o reqwalker_tb
 

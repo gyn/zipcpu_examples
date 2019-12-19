@@ -97,7 +97,7 @@ module	ledwalker(i_clk, o_led);
 
 	always @(*)
 		if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
-			assert(counter);
+			assert(strobe);
 
 	// I prefix all of the registers (or wires) I use in formal
 	// verification with f_, to distinguish them from the rest of the

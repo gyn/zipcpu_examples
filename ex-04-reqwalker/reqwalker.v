@@ -47,6 +47,33 @@ module	reqwalker(i_clk,
 	// The output LED
 	output	reg	[5:0]	o_led;
 
+	//
+	// integer clock divider to slow down the LED
+	//
+`ifdef	VERILATOR
+	parameter CLOCK_RATE_HZ = 300_000;
+`else
+`ifdef	FORMAL
+	parameter CLOCK_RATE_HZ = 5;
+`else
+	parameter CLOCK_RATE_HZ = 50_000_000;
+`endif
+`endif
+	localparam WIDTH = $clog2(CLOCK_RATE_HZ);
+
+	reg 	[WIDTH-1:0]	counter;
+	wire				strobe;
+
+	initial	counter = 0;
+	always @(posedge i_clk)
+	if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+		counter <= 0;
+	else begin
+		counter <= counter + 1'b1;
+	end
+
+	assign strobe = (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1));
+
 	wire		busy;
 	reg	[3:0]	state;
 	reg	[3:0]	state_next;
@@ -59,9 +86,9 @@ module	reqwalker(i_clk,
 	always @(*)
 	if ((i_stb)&&(i_we)&&(!o_stall))
 		state_next = 4'h1;
-	else if (state >= 4'd11)
+	else if (state >= 4'd11 && strobe)
 		state_next = 4'h0;
-	else if (state != 0)
+	else if (state != 0 && strobe)
 		state_next = state + 1'b1;
 
 	always @(posedge i_clk)
@@ -136,6 +163,13 @@ module	reqwalker(i_clk,
 	// Design properties
 	//
 	always @(*)
+		assert(counter < CLOCK_RATE_HZ);
+
+	always @(*)
+		if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+			assert(strobe);
+
+	always @(*)
 		assert(state <= 4'd11);
 
 	always @(*)
@@ -165,12 +199,14 @@ module	reqwalker(i_clk,
 	//
 	// state should increase when busy is true, and go back to zero in state 11
 	//
+	//
+	//
 	always @(posedge i_clk)
-	if ((f_past_valid)&&($past(busy))&&($past(state) < 4'hb))
+	if ((f_past_valid)&&($past(busy))&&($past(state) < 4'hb)&&$past(strobe))
 		assert(state == $past(state)+1);
 
 	always @(posedge i_clk)
-	if ((f_past_valid)&&($past(busy))&&($past(state) == 4'hb))
+	if ((f_past_valid)&&($past(busy))&&($past(state) == 4'hb)&&$past(strobe))
 		assert(state == 0);
 
 	always @(posedge i_clk)

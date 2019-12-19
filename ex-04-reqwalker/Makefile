@@ -40,7 +40,7 @@ VOPT := OPT_FAST="-O3 -fno-stack-protector"
 COPT := -O3 -fno-stack-protector
 
 obj_dir/Vreqwalker.cpp: reqwalker.v
-	$(VERILATOR) --trace -Wall -cc reqwalker.v
+	$(VERILATOR) --trace -Wall -GCLOCK_RATE_HZ=3000 -cc reqwalker.v
 
 obj_dir/Vreqwalker__ALL.a: obj_dir/Vreqwalker.cpp
 	${MAKE} $(VOPT) --no-print-directory -C obj_dir -f Vreqwalker.mk

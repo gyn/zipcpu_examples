@@ -26,6 +26,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 //
+`default_nettype none
+//
 //
 module	reqwalker(i_clk,
 		i_cyc, i_stb, i_we, i_addr, i_data,
@@ -160,9 +162,16 @@ module	reqwalker(i_clk,
 		assert(busy);
 	end
 
+	//
+	// state should increase when busy is true, and go back to zero in state 11
+	//
 	always @(posedge i_clk)
-	if ((f_past_valid)&&($past(busy))&&($past(state < 4'hb)))
+	if ((f_past_valid)&&($past(busy))&&($past(state) < 4'hb))
 		assert(state == $past(state)+1);
+
+	always @(posedge i_clk)
+	if ((f_past_valid)&&($past(busy))&&($past(state) == 4'hb))
+		assert(state == 0);
 
 	always @(posedge i_clk)
 	if (f_past_valid)

@@ -29,7 +29,7 @@
 //
 //
 //
-`define	BLINK_SHORTER
+`define	CONFIG_BLINK_SHORTER
 //
 module ppsi(i_clk, o_led);
 `ifdef	VERILATOR
@@ -54,7 +54,7 @@ module ppsi(i_clk, o_led);
 	always @(posedge i_clk)
 	if (counter == CLOCK_RATE_HZ-1)
 		o_led <= 0;
-`ifdef BLINK_SHORTER
+`ifdef CONFIG_BLINK_SHORTER
 	else if (counter == 3*CLOCK_RATE_HZ/4-1)
 `else
 	else if (counter == CLOCK_RATE_HZ/2-1)

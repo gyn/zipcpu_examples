@@ -90,6 +90,8 @@ module	reqwalker(i_clk,
 		state_next = 4'h0;
 	else if (state != 0 && strobe)
 		state_next = state + 1'b1;
+	else
+		state_next = state;
 
 	always @(posedge i_clk)
 	case(state_next)

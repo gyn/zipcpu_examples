@@ -201,8 +201,6 @@ module	reqwalker(i_clk,
 	//
 	// state should increase when busy is true, and go back to zero in state 11
 	//
-	//
-	//
 	always @(posedge i_clk)
 	if ((f_past_valid)&&($past(busy))&&($past(state) < 4'hb)&&$past(strobe))
 		assert(state == $past(state)+1);

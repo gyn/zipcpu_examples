@@ -54,6 +54,7 @@ void	tick(void) {
 unsigned wb_read(unsigned a) {
 	tb->i_cyc = tb->i_stb = 1;
 	tb->i_we  = 0;
+	tb->eval();
 	tb->i_addr= a;
 	// Make the request
 	while(tb->o_stall)
@@ -71,6 +72,7 @@ unsigned wb_read(unsigned a) {
 void wb_write(unsigned a, unsigned v) {
 	tb->i_cyc = tb->i_stb = 1;
 	tb->i_we  = 1;
+	tb->eval();
 	tb->i_addr= a;
 	tb->i_data= v;
 	// Make the bus request

@@ -1,0 +1,18 @@
+[tasks]
+cvr
+prf
+
+[options]
+cvr: mode cover
+cvr: depth 60
+prf: mode prove
+
+[engines]
+smtbmc
+
+[script]
+read -formal reqwalker_button.v
+prep -top reqwalker_button
+
+[files]
+reqwalker_button.v

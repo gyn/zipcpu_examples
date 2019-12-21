@@ -83,11 +83,12 @@ module	reqwalker_button(i_clk,
 
 	initial	counter = 0;
 	always @(posedge i_clk)
-	if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+	if (!busy)
 		counter <= 0;
-	else begin
+	else if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+		counter <= 0;
+	else
 		counter <= counter + 1'b1;
-	end
 
 	assign strobe = (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1));
 

@@ -63,5 +63,5 @@ reqwalker_button_tb: reqwalker_button.cpp obj_dir/Vreqwalker_button__ALL.a
 
 .PHONY: clean
 clean:
-	rm -rf obj_dir/ reqwalker_tb reqwalker.vcd reqwalker_cvr/ \
-	reqwalker_button_prf/ reqwalker_button_tb reqwalker_button.vcd reqwalker_button_cvr/ reqwalker_button_prf/
+	rm -rf obj_dir/ reqwalker_tb reqwalker.vcd reqwalker_cvr/ reqwalker_prf/ \
+	reqwalker_button_tb reqwalker_button.vcd reqwalker_button_cvr/ reqwalker_button_prf/

@@ -45,13 +45,13 @@ module	ledwalker(i_clk, o_led);
 
 	initial	counter = 0;
 	always @(posedge i_clk)
-	if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+	if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1'b1))
 		counter <= 0;
 	else begin
 		counter <= counter + 1'b1;
 	end
 
-	assign strobe = (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1));
+	assign strobe = (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1'b1));
 
 	reg	[3:0]	led_index;
 	initial	led_index = 0;
@@ -96,7 +96,7 @@ module	ledwalker(i_clk, o_led);
 		assert(counter < CLOCK_RATE_HZ);
 
 	always @(*)
-		if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+		if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1'b1))
 			assert(strobe);
 
 	// I prefix all of the registers (or wires) I use in formal

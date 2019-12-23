@@ -85,12 +85,12 @@ module	reqwalker_button(i_clk,
 	always @(posedge i_clk)
 	if (!busy)
 		counter <= 0;
-	else if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+	else if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1'b1))
 		counter <= 0;
 	else
 		counter <= counter + 1'b1;
 
-	assign strobe = (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1));
+	assign strobe = (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1'b1));
 
 	wire		busy;
 	reg	[3:0]	state;
@@ -188,7 +188,7 @@ module	reqwalker_button(i_clk,
 		assert(counter < CLOCK_RATE_HZ);
 
 	always @(*)
-		if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1))
+		if (counter == (CLOCK_RATE_HZ[WIDTH-1:0]-1'b1))
 			assert(strobe);
 
 	always @(*)
